@@ -13,21 +13,18 @@ public class Koneksi {
     public static void main(String[] args) throws SQLException {
 
         Connection koneksi = DriverManager.getConnection(URL, username, password);
-        PreparedStatement perintah = koneksi.prepareStatement("select ID, JUDUL_BUKU, NAMA_PENGARANG, ISBN from Buku where ID = ? and NAMA_PENGARANG like ?");
-        perintah.setInt(1, 1);
-//        escape character % ignore _ only one character
-        perintah.setString(2, "_i%");
-        ResultSet resultSet = perintah.executeQuery();
-//        ambil data per baris
-        while (resultSet.next()) {
-            String namaPengarang = resultSet.getString("NAMA_PENGARANG");
-            String judulBuku = resultSet.getString("JUDUL_BUKU");
-            String isbn = resultSet.getString(4);
-            Integer id = resultSet.getInt(1);
-
-            System.out.println("namaPengarang : " + namaPengarang + ", judulBuku: " + judulBuku + ", isbn: " + isbn);
-        }
-        resultSet.close();
+        PreparedStatement perintah = koneksi.prepareStatement("insert into Buku ( JUDUL_BUKU, NAMA_PENGARANG, PENERBIT_ID, TAHUN_TERBIT, TANGGAL_PUBLISH, ISBN, TERSEDIA, CREATED_DATE, LAST_UPDATE_DATE, CREATED_BY, UPDATED_BY)\n" +
+                "values (?, ?, ?, ?, ?, ?, ?, ?, null, ?, null);");
+        perintah.setString(1, "PHP Programing");
+        perintah.setString(2, "Putri");
+        perintah.setInt(3, 1);
+        perintah.setInt(4, 2017);
+        perintah.setDate(5, Date.valueOf("2017-08-20"));
+        perintah.setString(6, "1234-12345-2343435");
+        perintah.setBoolean(7, true);
+        perintah.setTimestamp(8, Timestamp.valueOf("2017-03-10 10:00:00"));
+        perintah.setString(9, "OP");
+        perintah.executeUpdate();
         perintah.close();
         koneksi.close();
     }
