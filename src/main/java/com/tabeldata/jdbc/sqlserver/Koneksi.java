@@ -12,20 +12,11 @@ public class Koneksi {
 
     public static void main(String[] args) throws SQLException {
 
-//        try {
-//            // untuk membuat koneksi ke database
-//            Connection connection = DriverManager.getConnection(URL, username, password);
-//            System.out.println("Database terkoneksi");
-//        } catch (SQLException sqle) {
-//            // handling ketika terjadi error koneksi ke database
-////            sqle.printStackTrace();
-//            System.out.println("Tidak dapat koneksi ke database kerena username atau password salah");
-//        }
-
         Connection koneksi = DriverManager.getConnection(URL, username, password);
         PreparedStatement perintah = koneksi.prepareStatement("select ID, JUDUL_BUKU, NAMA_PENGARANG, ISBN from Buku where ID = ? and NAMA_PENGARANG like ?");
         perintah.setInt(1, 1);
-        perintah.setString(2, "Dimas");
+//        escape character % ignore _ only one character
+        perintah.setString(2, "_i%");
         ResultSet resultSet = perintah.executeQuery();
 //        ambil data per baris
         while (resultSet.next()) {
