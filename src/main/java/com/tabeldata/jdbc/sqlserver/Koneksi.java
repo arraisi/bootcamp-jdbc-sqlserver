@@ -23,18 +23,20 @@ public class Koneksi {
 //        }
 
         Connection koneksi = DriverManager.getConnection(URL, username, password);
-        Statement perintah = koneksi.createStatement();
-        ResultSet hasil = perintah.executeQuery("select ID, JUDUL_BUKU, NAMA_PENGARANG, ISBN from Buku");
+        PreparedStatement perintah = koneksi.prepareStatement("select ID, JUDUL_BUKU, NAMA_PENGARANG, ISBN from Buku where ID = ? and NAMA_PENGARANG like ?");
+        perintah.setInt(1, 1);
+        perintah.setString(2, "Dimas");
+        ResultSet resultSet = perintah.executeQuery();
 //        ambil data per baris
-        while (hasil.next()) {
-            String namaPengarang = hasil.getString("NAMA_PENGARANG");
-            String judulBuku = hasil.getString("JUDUL_BUKU");
-            String isbn = hasil.getString(4);
-            Integer id = hasil.getInt(1);
+        while (resultSet.next()) {
+            String namaPengarang = resultSet.getString("NAMA_PENGARANG");
+            String judulBuku = resultSet.getString("JUDUL_BUKU");
+            String isbn = resultSet.getString(4);
+            Integer id = resultSet.getInt(1);
 
             System.out.println("namaPengarang : " + namaPengarang + ", judulBuku: " + judulBuku + ", isbn: " + isbn);
         }
-        hasil.close();
+        resultSet.close();
         perintah.close();
         koneksi.close();
     }
