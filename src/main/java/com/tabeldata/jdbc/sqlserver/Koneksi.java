@@ -13,13 +13,27 @@ public class Koneksi {
     public static void main(String[] args) throws SQLException {
 
         Connection koneksi = DriverManager.getConnection(URL, username, password);
+//        transactional auto commit dimatikan
+        koneksi.setAutoCommit(false);
         PreparedStatement perintah = koneksi.prepareStatement("update Buku\n" +
                 "set NAMA_PENGARANG = ?, LAST_UPDATE_DATE = sysdatetime(), UPDATED_BY = ?\n" +
                 "where ID = ?");
-        perintah.setString(1, "Dimas Maryanto");
+        perintah.setString(1, "Dimas");
+        perintah.setString(2, "OP1");
+        perintah.setInt(3, 2);
+        perintah.executeUpdate();
+
+        perintah = koneksi.prepareStatement("update Buku\n" +
+                "set TAHUN_TERBIT = ?, LAST_UPDATE_DATE = sysdatetime(), UPDATED_BY = ?\n" +
+                "where ID = ?");
+        perintah.setInt(1, 2011);
         perintah.setString(2, "OP");
         perintah.setInt(3, 2);
         perintah.executeUpdate();
+
+//      simpan data secara permanen
+        koneksi.commit();
+
         perintah.close();
         koneksi.close();
     }
