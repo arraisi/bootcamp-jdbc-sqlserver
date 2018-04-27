@@ -1,6 +1,8 @@
 package com.tabeldata.jdbc.sqlserver;
 
 import java.sql.*;
+import java.util.Arrays;
+import java.util.List;
 
 public class Koneksi {
 
@@ -12,26 +14,23 @@ public class Koneksi {
 
     public static void main(String[] args) {
 
+        List<String> daftarKatogori = Arrays.asList("Pemograman", "Ilmu Komputer Dasar", "Networking", "Sastra", "Fisika", "Elektro");
+
         Connection koneksi = null;
         try {
             koneksi = DriverManager.getConnection(URL, username, password);
 //        transactional auto commit dimatikan
             koneksi.setAutoCommit(false);
-            PreparedStatement perintah = koneksi.prepareStatement("update Buku\n" +
-                    "set NAMA_PENGARANG = ?, LAST_UPDATE_DATE = sysdatetime(), UPDATED_BY = ?\n" +
-                    "where ID = ?");
-            perintah.setString(1, "Dimas");
-            perintah.setString(2, "OP1");
-            perintah.setInt(3, 2);
-            perintah.executeUpdate();
 
-            perintah = koneksi.prepareStatement("update Buku\n" +
-                    "set TAHUN_TERBIT = ?, LAST_UPDATE_DATE = sysdatetime(), UPDATED_BY = ?\n" +
-                    "where ID = ?");
-            perintah.setInt(1, 2011);
-            perintah.setString(2, "OP");
-            perintah.setInt(3, 2);
-            perintah.executeUpdate();
+            String sql = "insert into JDBC_DIMAS.dbo.Kategori( NAMA_KATEGORI) values (?)";
+            PreparedStatement perintah = koneksi.prepareStatement(sql);
+            for(String value : daftarKatogori){
+                perintah.setString(1, value);
+                perintah.addBatch();
+            }
+            perintah.executeBatch();
+//            required supaya cache di prosessor di bersikan
+            perintah.clearBatch();
 
 //      simpan data secara permanen
             koneksi.commit();
